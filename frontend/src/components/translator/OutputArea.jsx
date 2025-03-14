@@ -1,7 +1,11 @@
 import React from 'react'
 import { Box, Input, TextField } from '@mui/material'
 
+import { useTranslatedStore } from '../../store'
+
 const OutputArea = () => {
+  let translatedText = useTranslatedStore((state => state.translatedText))
+  console.log('inputText: ' + translatedText)
   return (
     <div className='input-area mt-2 '>
       <Box
@@ -18,9 +22,9 @@ const OutputArea = () => {
           disableUnderline
           multiline
           readOnly
-          minRows={15}
+          minRows={10}
           maxRows={30}
-          value='Translation will appear here'
+          value= {translatedText ? translatedText : 'Translation will appear here'}
           sx={{ fontSize: '1.4rem', ":hover": { cursor: 'pointer' } }}
           >
         </Input>

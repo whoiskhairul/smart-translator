@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import axios from 'axios'
 import config from '../config'
 
@@ -8,19 +8,30 @@ import OutputArea from './translator/OutputArea'
 import { Button, IconButton, Container, Grid, Paper, Typography, TextField, InputAdornment } from '@mui/material'
 import LanguageSelection from './translator/LanguageSelection'
 
+import { useInputStore ,useTranslatedStore } from '../store'
+
 const TranslatorPage = () => {
 
+  const inputText = useInputStore((state) => state.inputText)
+  const setTranslatedText = useTranslatedStore((state) => state.setTranslatedText)
+
+
   const getTranslation = async () => {
+    let url = config.API_URL + '/translate' + '?q=' + inputText
     try {
-      let url = config.API_URL + '/translate'
       const response = await axios.get(url)
-      console.log(response.data)
+      const translatedText = response.data.translatedText
+      setTranslatedText(translatedText)
+      console.log(translatedText)
     } catch (error) {
       console.error(error)
     }
 
-
   }
+
+  useEffect(() =>{
+    getTranslation()
+  }, [inputText])
 
 
   return (

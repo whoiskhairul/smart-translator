@@ -1,20 +1,29 @@
-import React from 'react'
-import { Box, IconButton, Input, TextField, InputAdornment } from '@mui/material'
+import React, { useEffect, useRef } from 'react'
+import { Box, IconButton, Input, TextField, InputAdornment, Skeleton } from '@mui/material'
 import { Mic } from '@mui/icons-material'
 import axios from 'axios'
+
 import config from '../../config'
+import useInputStore from '../../store'
 
 const InputArea = () => {
+  // variables for input text and set input text from the store using zustand 
+  const inputText = useInputStore((state) => state.inputText)
+  const setInputText = useInputStore((state) => state.setInputText)
 
-  const [inputText, setInputText] = React.useState('')
-  const [lastInputTime, setLastInputTime] = React.useState(0)
+  // timerRef to store the timer 
+  const timerRef = useRef(null)
+  // function to set the input text after 2 seconds of typing
   const handleInputChange = (e) => {
-    if (Date.now() - lastInputTime < 1000) {
-      let url = config.API_URL + '/translate/'
-      const response = axios.post(url, { input_text: inputText })
-      console.log(response.data)
-    }
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout( () => {
+      setInputText(e.target.value)
+    }, 2000)
   }
+
+  useEffect(() => {
+    // console.log('inputText: ' + inputText)
+  })
 
 
   return (
@@ -23,7 +32,6 @@ const InputArea = () => {
         sx={{
           width: '100%',
           bgcolor: 'background.paper',
-
           boxShadow: 1,
           p: 2,
         }}>
@@ -32,17 +40,13 @@ const InputArea = () => {
           autoFocus
           disableUnderline
           multiline
-          minRows={15}
+          minRows={10}
           maxRows={30}
           placeholder='
           Enter text to translate'
           sx={{ fontSize: '1.4rem' }}
           inputProps={{ maxLength: 1500, }}
-          onChange={(e) => {
-            setInputText(e.target.value)
-            setLastInputTime(Date.now())
-            handleInputChange()
-          }}
+          onChange={handleInputChange}
         >
         </Input>
       </Box>
