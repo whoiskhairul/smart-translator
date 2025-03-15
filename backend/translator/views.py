@@ -7,14 +7,31 @@ from rest_framework.decorators import api_view
 
 from .models import AvailableLanguage
 from .serializers import AvailableLanguageSerializer
+from openai import OpenAI
+
+from dotenv import load_dotenv
+import os
+
+from .utils import Translator
+
+load_dotenv()
+
+# OpenAI API Key
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Create your views here.
 
 class TranslateView(APIView):
     def get(self, request):
-        return Response("Hello, World! class based view")
-    def post(self, request):
-        pass
+        q = request.query_params.get('q', '')
+        print(q)
+        # res = q[::-1]
+        res = Translator().translate(q)
+        return Response({
+            'translatedText': res
+        })
+
 
 @api_view(['GET'])
 def translate(request):

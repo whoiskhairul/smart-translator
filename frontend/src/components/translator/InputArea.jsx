@@ -2,14 +2,16 @@ import React, { useEffect, useRef } from 'react'
 import { Box, IconButton, Input, TextField, InputAdornment, Skeleton } from '@mui/material'
 import { Mic } from '@mui/icons-material'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
-import config from '../../config'
 import useInputStore from '../../store'
 
 const InputArea = () => {
   // variables for input text and set input text from the store using zustand 
   const inputText = useInputStore((state) => state.inputText)
   const setInputText = useInputStore((state) => state.setInputText)
+
+  const navigate = useNavigate()
 
   // timerRef to store the timer 
   const timerRef = useRef(null)
@@ -18,6 +20,12 @@ const InputArea = () => {
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout( () => {
       setInputText(e.target.value)
+      if (e.target.value){
+        navigate('?q=' + e.target.value)
+      }else{
+        navigate('/')
+      }
+      
     }, 2000)
   }
 
