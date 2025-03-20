@@ -5,7 +5,6 @@ import { useTranslatedStore } from '../../store'
 
 const OutputArea = () => {
   let translatedText = useTranslatedStore((state => state.translatedText))
-  console.log('inputText: ' + translatedText)
   return (
     <div className='input-area mt-2 '>
       <Box

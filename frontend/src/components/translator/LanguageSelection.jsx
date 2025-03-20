@@ -15,6 +15,7 @@ const LanguageSelection = () => {
             const response = await axios.get(url)
             // console.log(response.data)
             setLanguages(response.data)
+            console.log('languages:', response.data)
             setLoading(false)
 
         } catch (error) {
@@ -22,16 +23,24 @@ const LanguageSelection = () => {
         }
     }
     // getLnaguages()
-    useEffect(() => {
-        getLnaguages()
-
-    }, [])
+    
 
     const [isRotated, setIsRotated] = React.useState(false);
+
+    const [sourceLanguage, setSourceLanguage] = React.useState('Detect Language')
+    const handleLanguageChange = (e) => {
+        setSourceLanguage(e.target.value)
+    }
 
     const handleSwapLanguagesClick = () => {
         setIsRotated(!isRotated);
     }
+
+    useEffect(() => {
+        getLnaguages()
+        console.log('languages:', sourceLanguage)
+
+    }, [])
 
     return (
         <>
@@ -46,20 +55,21 @@ const LanguageSelection = () => {
                         :
                         <div className='w-1/2 text-left px-2 md:px-8'>
                             <TextField
-                                id='select-language'
+                                id='select-source-language'
                                 select
                                 label='Select Language'
                                 variant='standard'
                                 size='small'
                                 autowidth='true'
-                                defaultValue='Detect Language'
+                                defaultValue='auto'
                                 margin='dense'
                                 multiline
                                 minRows={2}
+                                onChange={ handleLanguageChange }
                             >
-                                {languages.map((option) => (
-                                    <MenuItem key={option.language} value={option.language} fontSize='large' variant='caption'>
-                                        {option.language}
+                                {languages.map((option, index) => (
+                                    <MenuItem key={index} value={option.value} fontSize='large' variant='caption' >
+                                        {option.language_name}
                                     </MenuItem>
                                 ))}
                             </TextField>
@@ -85,11 +95,11 @@ const LanguageSelection = () => {
                                 variant='standard'
                                 size='small'
                                 autowidth='true'
-                                defaultValue='English (United States)'
+                                defaultValue='en'
                             >
                                 {languages.map((option) => (
-                                    option.language !== 'Detect Language' && <MenuItem key={option.language} value={option.language} fontSize='0.6rem' variant='caption'>
-                                        {option.language}
+                                    option.language_name !== 'Detect Language' && <MenuItem key={option.language_name} value={option.value} fontSize='0.6rem' variant='caption'>
+                                        {option.language_name}
                                     </MenuItem>
 
 

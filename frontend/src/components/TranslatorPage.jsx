@@ -17,12 +17,12 @@ const TranslatorPage = () => {
 
 
   const getTranslation = async () => {
-    let url = config.API_URL + '/translate' + '?q=' + inputText
+    let q = "?q=" + inputText
+    let url = config.API_URL + '/translate' + q
     try {
       const response = await axios.get(url)
       const translatedText = response.data.translatedText
       setTranslatedText(translatedText)
-      console.log(translatedText)
     } catch (error) {
       console.error(error)
     }
