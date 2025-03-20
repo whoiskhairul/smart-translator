@@ -4,7 +4,7 @@ from .models import AvailableLanguage
 
 @admin.register(AvailableLanguage)
 class AvailableLanguageAdmin(admin.ModelAdmin):
-    list_display = ['language']
-    search_fields = ['language']
-    list_filter = ['language']
+    list_display = ['language_name']
+    search_fields = ['language_name']
+    list_filter = ['language_name']
     

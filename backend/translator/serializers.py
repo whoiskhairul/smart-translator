@@ -4,4 +4,4 @@ from .models import AvailableLanguage
 class AvailableLanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = AvailableLanguage
-        fields = ['language']
+        fields = ['language_name', 'value']
