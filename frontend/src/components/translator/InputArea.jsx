@@ -20,12 +20,6 @@ const InputArea = () => {
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout( () => {
       setInputText(e.target.value)
-      if (e.target.value){
-        navigate('?q=' + e.target.value)
-      }else{
-        navigate('/')
-      }
-      
     }, 2000)
   }
 

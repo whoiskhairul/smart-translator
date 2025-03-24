@@ -1,37 +1,47 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+
 import config from '../config'
 
 import InputArea from './translator/InputArea'
 import OutputArea from './translator/OutputArea'
-
-import { Button, IconButton, Container, Grid, Paper, Typography, TextField, InputAdornment } from '@mui/material'
 import LanguageSelection from './translator/LanguageSelection'
 
-import { useInputStore ,useTranslatedStore } from '../store'
+import { useLanguageStore, useInputStore, useTranslatedStore } from '../store' //zusand Store for states
+
+import { Container } from '@mui/material'
 
 const TranslatorPage = () => {
 
+  const navigate = useNavigate()
+
   const inputText = useInputStore((state) => state.inputText)
   const setTranslatedText = useTranslatedStore((state) => state.setTranslatedText)
-
+  const sl = useLanguageStore((state) => state.sourceLanguage)
+  const tl = useLanguageStore((state) => state.targetLanguage)
 
   const getTranslation = async () => {
-    let q = "?q=" + inputText
-    let url = config.API_URL + '/translate' + q
+    const query_praram = new URLSearchParams({ sl: sl, tl: tl, q: inputText.trim() }) //query params for API
+    let url = config.API_URL + '/translate/?' + query_praram //API URL with query params
     try {
-      const response = await axios.get(url)
-      const translatedText = response.data.translatedText
-      setTranslatedText(translatedText)
+      if (inputText) {
+        const response = await axios.get(url)
+        const translatedText = response.data.translatedText //get translated text from API response
+        setTranslatedText(translatedText)
+
+        navigate('/translate/?' + query_praram) //update url on Browser with query params
+      } else {
+        navigate('/') //if input text is empty, redirect to base url on browser
+      }
     } catch (error) {
       console.error(error)
     }
-
   }
 
-  useEffect(() =>{
+  useEffect(() => {
     getTranslation()
-  }, [inputText])
+  }, [inputText, sl, tl]) 
 
 
   return (

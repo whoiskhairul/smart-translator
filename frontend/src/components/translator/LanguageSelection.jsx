@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
 
-import { Divider, IconButton, Typography, TextField, MenuItem, Skeleton } from '@mui/material'
+import { Divider, IconButton, Typography, TextField, MenuItem, Skeleton, FormControl, Select, InputLabel } from '@mui/material'
 import { SwapHoriz, KeyboardArrowDown } from '@mui/icons-material'
+
+import { useLanguageStore } from '../../store'
+
 import config from '../../config'
 const LanguageSelection = () => {
 
@@ -23,13 +26,20 @@ const LanguageSelection = () => {
         }
     }
     // getLnaguages()
-    
+
 
     const [isRotated, setIsRotated] = React.useState(false);
 
-    const [sourceLanguage, setSourceLanguage] = React.useState('Detect Language')
-    const handleLanguageChange = (e) => {
+    // const [sourceLanguage, setSourceLanguage] = React.useState('auto')
+    const { sourceLanguage, setSourceLanguage } = useLanguageStore()
+    const handleSourceLanguageChange = (e) => {
         setSourceLanguage(e.target.value)
+    }
+
+    // const [targetLanguage, setTargetLanguage] = React.useState('en')
+    const { targetLanguage, setTargetLanguage } = useLanguageStore()
+    const handleTranslationLanguageChange = (e) => {
+        setTargetLanguage(e.target.value)
     }
 
     const handleSwapLanguagesClick = () => {
@@ -38,7 +48,6 @@ const LanguageSelection = () => {
 
     useEffect(() => {
         getLnaguages()
-        console.log('languages:', sourceLanguage)
 
     }, [])
 
@@ -54,7 +63,7 @@ const LanguageSelection = () => {
                         </div>
                         :
                         <div className='w-1/2 text-left px-2 md:px-8'>
-                            <TextField
+                            <TextField className='w-full'
                                 id='select-source-language'
                                 select
                                 label='Select Language'
@@ -63,9 +72,7 @@ const LanguageSelection = () => {
                                 autowidth='true'
                                 defaultValue='auto'
                                 margin='dense'
-                                multiline
-                                minRows={2}
-                                onChange={ handleLanguageChange }
+                                onChange={handleSourceLanguageChange}
                             >
                                 {languages.map((option, index) => (
                                     <MenuItem key={index} value={option.value} fontSize='large' variant='caption' >
@@ -83,12 +90,13 @@ const LanguageSelection = () => {
                     </div>
                     {loading ?
                         <div className='w-1/2 text-left px-2 md:px-8'>
-                            <Skeleton variant='text' animation='wave'  />
+                            <Skeleton variant='text' animation='wave' />
                             <Skeleton variant='text' animation='wave' />
                         </div>
                         :
                         <div className='w-1/2 text-left px-2 md:px-8'>
                             <TextField
+                                className='w-full'
                                 id='select-translate-language'
                                 select
                                 label='Select Language'
@@ -96,13 +104,14 @@ const LanguageSelection = () => {
                                 size='small'
                                 autowidth='true'
                                 defaultValue='en'
+                                margin='dense'
+                                onChange={handleTranslationLanguageChange}
+
                             >
                                 {languages.map((option) => (
                                     option.language_name !== 'Detect Language' && <MenuItem key={option.language_name} value={option.value} fontSize='0.6rem' variant='caption'>
                                         {option.language_name}
                                     </MenuItem>
-
-
                                 ))}
                             </TextField>
                         </div>

@@ -6,6 +6,14 @@ export const useInputStore = create((set) => ({
     clearInput: () => set({inputText: ''})
 }))
 
+export const useLanguageStore = create((set) => ({
+    sourceLanguage: 'auto',
+    setSourceLanguage: (lang) =>set({sourceLanguage: lang}),
+    
+    targetLanguage: 'en',
+    setTargetLanguage: (lang) =>set({targetLanguage: lang}),
+}))
+
 export const useTranslatedStore = create((set) => ({
     translatedText: '',
     setTranslatedText: (text) => set({translatedText: text}),

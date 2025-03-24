@@ -27,7 +27,7 @@ class TranslateView(APIView):
         q = request.query_params.get('q', '')
         print(q)
         # res = q[::-1]
-        res = Translator().translate(q)
+        res = Translator().translate(q) if q else ''
         return Response({
             'translatedText': res
         })
