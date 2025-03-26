@@ -12,7 +12,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 
-from .utils import Translator
+from .utils import Translator, LanguageDetection
 
 load_dotenv()
 
@@ -25,11 +25,22 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 class TranslateView(APIView):
     def get(self, request):
         q = request.query_params.get('q', '')
-        print(q)
+        sl = request.query_params.get('sl', '')
+        tl = request.query_params.get('tl', '')
         # res = q[::-1]
-        res = Translator().translate(q) if q else ''
+        try:
+            sl = LanguageDetection().detect(q) if sl == 'auto' else sl
+            print( 'Source language: ' , sl, )
+            res = Translator().translate(q, sl, tl) if q else ''
+            success = True
+        except Exception as e:
+            success = False
+            res = ''
+            print('Error in translateView: ', e)
         return Response({
-            'translatedText': res
+            'success': success,
+            'translatedText': res,
+            'detectedSourceLanguage': sl,
         })
 
 

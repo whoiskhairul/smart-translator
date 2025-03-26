@@ -16,9 +16,7 @@ const LanguageSelection = () => {
         try {
             let url = config.API_URL + '/translate/languages'
             const response = await axios.get(url)
-            // console.log(response.data)
             setLanguages(response.data)
-            console.log('languages:', response.data)
             setLoading(false)
 
         } catch (error) {
@@ -42,8 +40,16 @@ const LanguageSelection = () => {
         setTargetLanguage(e.target.value)
     }
 
-    const handleSwapLanguagesClick = () => {
-        setIsRotated(!isRotated);
+    const handleSwapLanguagesClick = (e) => {
+        if (sourceLanguage !== 'auto'){
+            setIsRotated(!isRotated); //to rotate the swap icon
+            //to swap the selected and target language
+            let temp = sourceLanguage
+            setSourceLanguage(targetLanguage)
+            setTargetLanguage(temp)
+        }else{
+            window.alert("Can not swap when Source language is 'Auto'")
+        }
     }
 
     useEffect(() => {
@@ -70,7 +76,7 @@ const LanguageSelection = () => {
                                 variant='standard'
                                 size='small'
                                 autowidth='true'
-                                defaultValue='auto'
+                                value= {sourceLanguage}
                                 margin='dense'
                                 onChange={handleSourceLanguageChange}
                             >
@@ -103,13 +109,13 @@ const LanguageSelection = () => {
                                 variant='standard'
                                 size='small'
                                 autowidth='true'
-                                defaultValue='en'
+                                value= {targetLanguage}
                                 margin='dense'
                                 onChange={handleTranslationLanguageChange}
 
                             >
                                 {languages.map((option) => (
-                                    option.language_name !== 'Detect Language' && <MenuItem key={option.language_name} value={option.value} fontSize='0.6rem' variant='caption'>
+                                    option.language_name !== 'Auto' && <MenuItem key={option.language_name} value={option.value} fontSize='0.6rem' variant='caption'>
                                         {option.language_name}
                                     </MenuItem>
                                 ))}

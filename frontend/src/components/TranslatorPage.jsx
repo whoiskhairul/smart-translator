@@ -30,6 +30,10 @@ const TranslatorPage = () => {
         const translatedText = response.data.translatedText //get translated text from API response
         setTranslatedText(translatedText)
 
+        if (response.data.detectedSourceLanguage !== sl){
+          console.log(response.data.detectedSourceLanguage)
+        }
+
         navigate('/translate/?' + query_praram) //update url on Browser with query params
       } else {
         navigate('/') //if input text is empty, redirect to base url on browser
@@ -41,7 +45,7 @@ const TranslatorPage = () => {
 
   useEffect(() => {
     getTranslation()
-  }, [inputText, sl, tl]) 
+  }, [inputText, sl, tl])
 
 
   return (
