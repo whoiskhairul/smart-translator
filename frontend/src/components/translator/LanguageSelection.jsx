@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
 
-import { Divider, IconButton, Typography, TextField, MenuItem, Skeleton, FormControl, Select, InputLabel } from '@mui/material'
+import { Divider, IconButton, Typography, TextField, MenuItem, Skeleton, FormControl, Select, InputLabel, Tooltip } from '@mui/material'
 import { SwapHoriz, KeyboardArrowDown } from '@mui/icons-material'
 
-import { useLanguageStore } from '../../store'
+import { useLanguageStore,useInputStore, useOutputStore, useLocalInputStore } from '../../store'
 
 import config from '../../config'
 const LanguageSelection = () => {
@@ -12,7 +12,13 @@ const LanguageSelection = () => {
     const [loading, setLoading] = React.useState(true)
     const [languages, setLanguages] = React.useState([])
 
-    const getLnaguages = async () => {
+    const inputText = useInputStore((state => state.inputText))
+    const outputText = useOutputStore((state => state.outputText))
+    const setOutputText = useOutputStore((state) => state.setOutputText)
+    
+    const setLocalInput = useLocalInputStore((state) => state.setLocalInput)
+    
+    const getLanguage = async () => {
         try {
             let url = config.API_URL + '/translate/languages'
             const response = await axios.get(url)
@@ -23,7 +29,7 @@ const LanguageSelection = () => {
             console.error(error)
         }
     }
-    // getLnaguages()
+    // getLanguage()
 
 
     const [isRotated, setIsRotated] = React.useState(false);
@@ -41,21 +47,28 @@ const LanguageSelection = () => {
     }
 
     const handleSwapLanguagesClick = (e) => {
-        if (sourceLanguage !== 'auto'){
-            setIsRotated(!isRotated); //to rotate the swap icon
-            //to swap the selected and target language
-            let temp = sourceLanguage
-            setSourceLanguage(targetLanguage)
-            setTargetLanguage(temp)
-        }else{
-            window.alert("Can not swap when Source language is 'Auto'")
-        }
+
+        setIsRotated(!isRotated); //to rotate the swap icon
+
+        //to swap the selected source and target language
+        let temp = sourceLanguage
+        setSourceLanguage(targetLanguage)
+        setTargetLanguage(temp)
+
+        //to swap the input and output text
+        setLocalInput(outputText)
+        setOutputText('')
+
     }
 
     useEffect(() => {
-        getLnaguages()
+        getLanguage() //call getLanguage function on component mount
 
     }, [])
+
+    useEffect(() => {
+        console.log('output text', outputText)
+    }, [outputText])
 
     return (
         <>
@@ -76,7 +89,7 @@ const LanguageSelection = () => {
                                 variant='standard'
                                 size='small'
                                 autowidth='true'
-                                value= {sourceLanguage}
+                                value={sourceLanguage}
                                 margin='dense'
                                 onChange={handleSourceLanguageChange}
                             >
@@ -90,10 +103,18 @@ const LanguageSelection = () => {
                     }
 
                     <div className='w-fit m-auto items-center' style={{ transform: isRotated ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }}>
-                        <IconButton onClick={handleSwapLanguagesClick}>
-                            <SwapHoriz fontSize='large' />
-                        </IconButton>
+                        {sourceLanguage !== 'auto' ?
+                            <IconButton onClick={handleSwapLanguagesClick}>
+                                <Tooltip title='Swap languages' ><SwapHoriz fontSize='large' /></Tooltip>
+                                
+                            </IconButton>
+                            :
+                            <IconButton disabled onClick={handleSwapLanguagesClick}>
+                                <SwapHoriz fontSize='large' />
+                            </IconButton>
+                        }
                     </div>
+                    
                     {loading ?
                         <div className='w-1/2 text-left px-2 md:px-8'>
                             <Skeleton variant='text' animation='wave' />
@@ -109,7 +130,7 @@ const LanguageSelection = () => {
                                 variant='standard'
                                 size='small'
                                 autowidth='true'
-                                value= {targetLanguage}
+                                value={targetLanguage}
                                 margin='dense'
                                 onChange={handleTranslationLanguageChange}
 

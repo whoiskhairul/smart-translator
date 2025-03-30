@@ -1,10 +1,13 @@
-import React from 'react'
-import { Box, Input, TextField } from '@mui/material'
+import React, { use, useEffect } from 'react'
+import { Box, Input, Skeleton, TextField } from '@mui/material'
 
-import { useTranslatedStore } from '../../store'
+import { useOutputStore,useInputStore, useOutputLoadingStore } from '../../store'
 
 const OutputArea = () => {
-  let translatedText = useTranslatedStore((state => state.translatedText))
+  let translatedText = useOutputStore((state => state.outputText))
+  let inputText = useInputStore((state =>state.inputText))
+  const outputLoading = useOutputLoadingStore((state => state.outputLoading))
+
   return (
     <div className='input-area mt-2 '>
       <Box
@@ -15,18 +18,26 @@ const OutputArea = () => {
           p: 2,
           height: '100%'
         }}>
-        <Input
+        {
+          outputLoading? 
+          <div className=''>
+            <Skeleton variant="text" width={`100%`} height={'4ch'} />
+          </div>
+          : 
+          <Input
           fullWidth
           autoFocus
           disableUnderline
           multiline
           readOnly
-          minRows={10}
+          // minRows={10}
           maxRows={30}
           value= {translatedText ? translatedText : 'Translation will appear here'}
-          sx={{ fontSize: '1.4rem', ":hover": { cursor: 'pointer' } }}
+          sx={{ fontSize: '1.4rem', ":hover": { cursor: 'pointer', } }}
           >
         </Input>
+        }
+        
       </Box>
     </div>
   )

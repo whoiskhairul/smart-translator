@@ -4,28 +4,33 @@ import { Mic } from '@mui/icons-material'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-import useInputStore from '../../store'
+import useInputStore, { useLocalInputStore } from '../../store'
 
 const InputArea = () => {
+  // const [localInput, setLocalInput] = React.useState('')
+  const localInput = useLocalInputStore((state) => state.localInput)
+  const setLocalInput = useLocalInputStore((state) => state.setLocalInput)
+
   // variables for input text and set input text from the store using zustand 
   const inputText = useInputStore((state) => state.inputText)
   const setInputText = useInputStore((state) => state.setInputText)
 
   const navigate = useNavigate()
 
-  // timerRef to store the timer 
-  const timerRef = useRef(null)
+
   // function to set the input text after 2 seconds of typing
   const handleInputChange = (e) => {
-    clearTimeout(timerRef.current)
-    timerRef.current = setTimeout( () => {
-      setInputText(e.target.value)
-    }, 2000)
+    setLocalInput(e.target.value)
   }
 
+  // timerRef to store the timer 
+  const timerRef = useRef(null)
   useEffect(() => {
-    // console.log('inputText: ' + inputText)
-  })
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      setInputText(localInput)
+    }, 2000)
+  }, [localInput])
 
 
   return (
@@ -38,6 +43,7 @@ const InputArea = () => {
           p: 2,
         }}>
         <Input
+          value={localInput}
           fullWidth
           autoFocus
           disableUnderline
@@ -49,6 +55,7 @@ const InputArea = () => {
           sx={{ fontSize: '1.4rem' }}
           inputProps={{ maxLength: 1500, }}
           onChange={handleInputChange}
+          
         >
         </Input>
       </Box>
