@@ -17,14 +17,17 @@ const InputOutputSection = () => {
 
   // function to set the input text after 2 seconds of typing
   const handleInputChange = (e) => {
-    setLocalInput(e.target.value)
+      setLocalInput(e.target.value)
   }
+
+  // for skeleton loading according to the input text
   const splitedtext = localInput.split('\n')
-  // const l = splitedtext.length
+  const l = localInput.split('\n').length >=7 ? localInput.split('\n').length :7
 
   // timerRef to store the timer 
   const timerRef = useRef(null)
   useEffect(() => {
+    if (localInput.trim() === inputText) return
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
       setInputText(localInput)
@@ -55,7 +58,7 @@ const InputOutputSection = () => {
             autoFocus
             disableUnderline
             multiline
-            minRows={7}
+            minRows={l}
             maxRows={30}
             placeholder="Enter text to translate"
             sx={{ fontSize: '1.4rem' }}
@@ -88,7 +91,7 @@ const InputOutputSection = () => {
                 disableUnderline
                 multiline
                 readOnly
-                // minRows={l}
+                minRows={7}
                 maxRows={30}
                 value={
                   translatedText ? translatedText : 'Translation will appear here'

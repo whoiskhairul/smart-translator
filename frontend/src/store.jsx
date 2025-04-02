@@ -13,6 +13,7 @@ export const useInputStore = create((set) => ({
 export const useOutputStore = create((set) => ({
     outputText: '',
     setOutputText: (text) => set({outputText: text}),
+    clearOutput: () => set({outputText: ''})
 }))
 
 export const useLanguageStore = create((set) => ({

@@ -41,6 +41,7 @@ const TranslatorPage = () => {
         navigate('/translate/?' + query_praram) //update url on Browser with query params
       } else {
         navigate('/') //if input text is empty, redirect to base url on browser
+        setOutputText('') //set output text to empty
       }
     } catch (error) {
       console.error(error)

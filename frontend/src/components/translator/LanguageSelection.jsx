@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Divider, IconButton, Typography, TextField, MenuItem, Skeleton, FormControl, Select, InputLabel, Tooltip } from '@mui/material'
 import { SwapHoriz, KeyboardArrowDown } from '@mui/icons-material'
 
-import { useLanguageStore,useInputStore, useOutputStore, useLocalInputStore } from '../../store'
+import { useLanguageStore, useInputStore, useOutputStore, useLocalInputStore } from '../../store'
 
 import config from '../../config'
 const LanguageSelection = () => {
@@ -15,9 +15,9 @@ const LanguageSelection = () => {
     const inputText = useInputStore((state => state.inputText))
     const outputText = useOutputStore((state => state.outputText))
     const setOutputText = useOutputStore((state) => state.setOutputText)
-    
+
     const setLocalInput = useLocalInputStore((state) => state.setLocalInput)
-    
+
     const getLanguage = async () => {
         try {
             let url = config.API_URL + '/translate/languages'
@@ -37,12 +37,29 @@ const LanguageSelection = () => {
     // const [sourceLanguage, setSourceLanguage] = React.useState('auto')
     const { sourceLanguage, setSourceLanguage } = useLanguageStore()
     const handleSourceLanguageChange = (e) => {
-        setSourceLanguage(e.target.value)
+        if (e.target.value === targetLanguage) {
+            if (sourceLanguage === 'auto') {
+                setTargetLanguage('en')
+                setSourceLanguage(e.target.value)
+            }
+            else {
+                setTargetLanguage(sourceLanguage)
+                setSourceLanguage(e.target.value)
+            }
+        }
+        else {
+            setSourceLanguage(e.target.value)
+        }
+
     }
 
     // const [targetLanguage, setTargetLanguage] = React.useState('en')
     const { targetLanguage, setTargetLanguage } = useLanguageStore()
     const handleTranslationLanguageChange = (e) => {
+        if (e.target.value === sourceLanguage) {
+            setSourceLanguage(targetLanguage)
+            setTargetLanguage(e.target.value)
+        }
         setTargetLanguage(e.target.value)
     }
 
@@ -106,15 +123,14 @@ const LanguageSelection = () => {
                         {sourceLanguage !== 'auto' ?
                             <IconButton onClick={handleSwapLanguagesClick}>
                                 <Tooltip title='Swap languages' ><SwapHoriz fontSize='large' /></Tooltip>
-                                
                             </IconButton>
                             :
-                            <IconButton disabled onClick={handleSwapLanguagesClick}>
+                            <IconButton disabled>
                                 <SwapHoriz fontSize='large' />
                             </IconButton>
                         }
                     </div>
-                    
+
                     {loading ?
                         <div className='w-1/2 text-left px-2 md:px-8'>
                             <Skeleton variant='text' animation='wave' />
