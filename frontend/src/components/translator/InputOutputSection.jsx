@@ -28,10 +28,11 @@ const InputOutputSection = () => {
   const timerRef = useRef(null)
   useEffect(() => {
     if (localInput.trim() === inputText) return
-    clearTimeout(timerRef.current)
-    timerRef.current = setTimeout(() => {
-      setInputText(localInput)
-    }, 2000)
+    // clearTimeout(timerRef.current)
+    // timerRef.current = setTimeout(() => {
+    //   setInputText(localInput)
+    // }, 10)
+    setInputText(localInput)
   }, [localInput])
 
   let translatedText = useOutputStore((state => state.outputText))

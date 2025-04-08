@@ -1,3 +1,5 @@
+import time
+
 from django.shortcuts import render, HttpResponse
 
 from rest_framework.views import APIView
@@ -27,16 +29,21 @@ class TranslateView(APIView):
         q = request.query_params.get('q', '')
         sl = request.query_params.get('sl', '')
         tl = request.query_params.get('tl', '')
-        # res = q[::-1]
+        # print( 'Source language: ' , sl, tl, q )
+        res = q[::-1]
         try:
             sl = LanguageDetection().detect(q) if sl == 'auto' else sl
-            print( 'Source language: ' , sl, )
+        except Exception as e:
+            sl = 'detect language'
+        try:
             res = Translator().translate(q, sl, tl) if q else ''
+            print('Translated: ', res)
             success = True
         except Exception as e:
             success = False
-            res = ''
+            res = q
             print('Error in translateView: ', e)
+        # time.sleep(1)
         return Response({
             'success': success,
             'translatedText': res,

@@ -18,6 +18,7 @@ const TranslatorPage = () => {
   const navigate = useNavigate()
 
   const inputText = useInputStore((state) => state.inputText)
+  const outputText = useOutputStore((state) => state.outputText)
   const setOutputText = useOutputStore((state) => state.setOutputText)
   const sl = useLanguageStore((state) => state.sourceLanguage)
   const tl = useLanguageStore((state) => state.targetLanguage)
@@ -40,7 +41,7 @@ const TranslatorPage = () => {
 
         navigate('/translate/?' + query_praram) //update url on Browser with query params
       } else {
-        navigate('/') //if input text is empty, redirect to base url on browser
+        navigate('/translate') //if input text is empty, redirect to base url on browser
         setOutputText('') //set output text to empty
       }
     } catch (error) {
@@ -48,10 +49,21 @@ const TranslatorPage = () => {
     }
   }
 
-  useEffect(() => {
-    getTranslation()
-  }, [inputText, sl, tl])
 
+useEffect(() => {
+  const handler = setTimeout(() => {
+    getTranslation();
+  }, 2100); // delay of 300ms, adjust as needed
+
+  return () => {
+    clearTimeout(handler); // clear previous timeout if inputs change quickly
+  };
+}, [inputText, sl, tl]);
+
+
+  useEffect(() => {
+    console.log('Output Text:', outputText)
+  }, [outputText])
 
   return (
     <div className='translator-page '>

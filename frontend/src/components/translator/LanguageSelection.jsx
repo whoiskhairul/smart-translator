@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Divider, IconButton, Typography, TextField, MenuItem, Skeleton, FormControl, Select, InputLabel, Tooltip } from '@mui/material'
 import { SwapHoriz, KeyboardArrowDown } from '@mui/icons-material'
 
-import { useLanguageStore, useInputStore, useOutputStore, useLocalInputStore } from '../../store'
+import { useLanguageStore, useInputStore, useOutputStore, useLocalInputStore, useOutputLoadingStore } from '../../store'
 
 import config from '../../config'
 const LanguageSelection = () => {
@@ -15,6 +15,7 @@ const LanguageSelection = () => {
     const inputText = useInputStore((state => state.inputText))
     const outputText = useOutputStore((state => state.outputText))
     const setOutputText = useOutputStore((state) => state.setOutputText)
+    const setOutputLoading = useOutputLoadingStore((state) => state.setOutputLoading)
 
     const setLocalInput = useLocalInputStore((state) => state.setLocalInput)
 
@@ -75,6 +76,7 @@ const LanguageSelection = () => {
         //to swap the input and output text
         setLocalInput(outputText)
         setOutputText('')
+        setOutputLoading(true)
 
     }
 
